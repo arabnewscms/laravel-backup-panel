@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-backup-panel` will be documented in this file
 
+## 2.3.0 - 2024-07-06
+
+- Drop support for spatie/laravel-backup ^6.11.12
+- PHP dependencies were updated to eliminate vulnerabilities found in the previous versions of libraries
+
 ## 2.2.0 - 2022-05-05
 
 - Add support for spatie/laravel-backup ^8.0
