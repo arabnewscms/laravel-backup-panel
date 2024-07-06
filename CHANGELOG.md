@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-backup-panel` will be documented in this file
 
+## 2.4.0 - 2024-07-07
+
+- Drop support for spatie/laravel-backup ^7.0
+
 ## 2.3.0 - 2024-07-06
 
 - Drop support for spatie/laravel-backup ^6.11.12

@@ -27,7 +27,7 @@ Also, some users reported about hitting a rate limit of Dropbox API._
 ## Requirements
 
 Make sure you meet [the requirements for installing spatie/laravel-backup](https://docs.spatie.be/laravel-backup/v6/requirements).
-Since this package requires the spatie/laravel-backup version 7 or higher, it also requires PHP 8.0 and Laravel 8.0 or higher.
+Since this package requires the spatie/laravel-backup version 8 or higher, it also requires PHP 8.1 and Laravel 9.0 or higher.
 
 ### Using an older version of PHP, Laravel, spatie/laravel-backup?
 
