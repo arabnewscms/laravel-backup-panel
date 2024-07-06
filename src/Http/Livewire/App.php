@@ -78,12 +78,10 @@ class App extends Component
             return $backupDestination
                 ->backups()
                 ->map(function (Backup $backup) {
-                    $size = method_exists($backup, 'sizeInBytes') ? $backup->sizeInBytes() : $backup->size();
-
                     return [
                         'path' => $backup->path(),
                         'date' => $backup->date()->format('Y-m-d H:i:s'),
-                        'size' => Format::humanReadableSize($size),
+                        'size' => Format::humanReadableSize($backup->sizeInBytes()),
                     ];
                 })
                 ->toArray();
@@ -147,12 +145,10 @@ class App extends Component
     public function respondWithBackupStream(Backup $backup): StreamedResponse
     {
         $fileName = pathinfo($backup->path(), PATHINFO_BASENAME);
-        $size = method_exists($backup, 'sizeInBytes') ? $backup->sizeInBytes() : $backup->size();
-
         $downloadHeaders = [
             'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
             'Content-Type' => 'application/zip',
-            'Content-Length' => $size,
+            'Content-Length' => $backup->sizeInBytes(),
             'Content-Disposition' => 'attachment; filename="'.$fileName.'"',
             'Pragma' => 'public',
         ];
