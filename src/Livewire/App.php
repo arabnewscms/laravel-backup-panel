@@ -13,6 +13,7 @@ use PavelMironchik\LaravelBackupPanel\Rules\BackupDisk;
 use PavelMironchik\LaravelBackupPanel\Rules\PathToZip;
 use Spatie\Backup\BackupDestination\Backup;
 use Spatie\Backup\BackupDestination\BackupDestination;
+use Spatie\Backup\Config\Config;
 use Spatie\Backup\Helpers\Format;
 use Spatie\Backup\Tasks\Monitor\BackupDestinationStatus;
 use Spatie\Backup\Tasks\Monitor\BackupDestinationStatusFactory;
@@ -33,7 +34,9 @@ class App extends Component
     public function updateBackupStatuses(): void
     {
         $this->backupStatuses = Cache::remember('backup-statuses', now()->addSeconds(4), function () {
-            return BackupDestinationStatusFactory::createForMonitorConfig(config('backup.monitor_backups'))
+            $backupConfig = Config::fromArray(config('backup'));
+
+            return BackupDestinationStatusFactory::createForMonitorConfig($backupConfig->monitoredBackups)
                 ->map(function (BackupDestinationStatus $backupDestinationStatus) {
                     return [
                         'name' => $backupDestinationStatus->backupDestination()->backupName(),

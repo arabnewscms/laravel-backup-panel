@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-backup-panel` will be documented in this file
 
+## 2.6.0 - 2024-07-07
+
+- Add support for spatie/laravel-backup ^9.0
+
 ## 2.5.0 - 2024-07-07
 
 - Use the Livewire 3 adding support for the Laravel 10

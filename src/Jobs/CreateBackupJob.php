@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
+use Spatie\Backup\Config\Config;
 use Spatie\Backup\Tasks\Backup\BackupJobFactory;
 
 class CreateBackupJob implements ShouldQueue
@@ -21,7 +22,9 @@ class CreateBackupJob implements ShouldQueue
 
     public function handle()
     {
-        $backupJob = BackupJobFactory::createFromArray(config('backup'));
+        $backupConfig = Config::fromArray(config('backup'));
+
+        $backupJob = BackupJobFactory::createFromConfig($backupConfig);
 
         if ($this->option === 'only-db') {
             $backupJob->dontBackupFilesystem();
