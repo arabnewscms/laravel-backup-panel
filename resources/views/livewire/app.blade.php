@@ -16,10 +16,10 @@
                 </svg>
             </button>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#" id="create-backup-only-db" wire:click.prevent="">
+                <a class="dropdown-item" href="#" id="create-backup-only-db">
                     Create database backup
                 </a>
-                <a class="dropdown-item" href="#" id="create-backup-only-files" wire:click.prevent="">
+                <a class="dropdown-item" href="#" id="create-backup-only-files">
                     Create files backup
                 </a>
             </div>
@@ -206,9 +206,13 @@
             })
             $('#create-backup-only-db').on('click', function () {
                 backupFun('only-db')
+
+                return false
             })
             $('#create-backup-only-files').on('click', function () {
                 backupFun('only-files')
+
+                return false
             })
 
             const deleteModal = $('#deleteModal')
