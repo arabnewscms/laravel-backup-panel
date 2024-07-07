@@ -183,7 +183,9 @@
                     duration: 10000,
                     gravity: 'bottom',
                     position: 'right',
-                    backgroundColor: 'red',
+                    style: {
+                        background: 'red',
+                    },
                     className: 'toastify-custom',
                 }).showToast()
             })
@@ -194,7 +196,9 @@
                     duration: 5000,
                     gravity: 'bottom',
                     position: 'right',
-                    backgroundColor: '#1fb16e',
+                    style: {
+                        background: '#1fb16e',
+                    },
                     className: 'toastify-custom',
                 }).showToast()
 
