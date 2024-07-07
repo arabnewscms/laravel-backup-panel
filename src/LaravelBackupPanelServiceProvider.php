@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use PavelMironchik\LaravelBackupPanel\Console\InstallCommand;
-use PavelMironchik\LaravelBackupPanel\Http\Livewire\App;
 use PavelMironchik\LaravelBackupPanel\Http\Middleware\Authenticate;
+use PavelMironchik\LaravelBackupPanel\Livewire\App;
 
 class LaravelBackupPanelServiceProvider extends ServiceProvider
 {

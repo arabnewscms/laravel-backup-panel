@@ -53,7 +53,7 @@
                     </thead>
                     <tbody>
                     @foreach($backupStatuses as $backupStatus)
-                        <tr>
+                        <tr wire:key="{{ $backupStatus['disk'] }}">
                             <td>{{ $backupStatus['disk'] }}</td>
                             <td>
                                 @if($backupStatus['healthy'])
@@ -81,6 +81,7 @@
                         <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             @foreach($disks as $disk)
                                 <label class="btn btn-outline-secondary {{ $activeDisk === $disk ? 'active' : '' }}"
+                                       wire:key="{{ $disk }}"
                                        wire:click="getFiles('{{ $disk }}')"
                                 >
                                     <input type="radio" name="options" {{ $activeDisk === $disk ? 'checked' : '' }}>
@@ -113,7 +114,7 @@
                     </thead>
                     <tbody>
                     @foreach($files as $file)
-                        <tr>
+                        <tr wire:key="{{ $file['path'] }}">
                             <td>{{ $file['path'] }}</td>
                             <td>{{ $file['date'] }}</td>
                             <td>{{ $file['size'] }}</td>
@@ -169,16 +170,16 @@
     </div>
 
     <script>
-        document.addEventListener('livewire:load', function () {
+        document.addEventListener('livewire:initialized', function () {
             @this.updateBackupStatuses()
 
             @this.on('backupStatusesUpdated', function () {
                 @this.getFiles()
             })
 
-            @this.on('showErrorToast', function (message) {
+            @this.on('showErrorToast', function (data) {
                 Toastify({
-                    text: message,
+                    text: data.message,
                     duration: 10000,
                     gravity: 'bottom',
                     position: 'right',

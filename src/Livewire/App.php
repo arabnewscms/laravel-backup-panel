@@ -1,7 +1,8 @@
 <?php
 
-namespace PavelMironchik\LaravelBackupPanel\Http\Livewire;
+namespace PavelMironchik\LaravelBackupPanel\Livewire;
 
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
@@ -19,17 +20,17 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class App extends Component
 {
-    public $backupStatuses = [];
+    public array $backupStatuses = [];
 
-    public $activeDisk = null;
+    public ?string $activeDisk = null;
 
-    public $disks = [];
+    public array $disks = [];
 
-    public $files = [];
+    public array $files = [];
 
-    public $deletingFile = null;
+    public ?array $deletingFile = null;
 
-    public function updateBackupStatuses()
+    public function updateBackupStatuses(): void
     {
         $this->backupStatuses = Cache::remember('backup-statuses', now()->addSeconds(4), function () {
             return BackupDestinationStatusFactory::createForMonitorConfig(config('backup.monitor_backups'))
@@ -61,10 +62,10 @@ class App extends Component
             ->values()
             ->all();
 
-        $this->emitSelf('backupStatusesUpdated');
+        $this->dispatch('backupStatusesUpdated')->self();
     }
 
-    public function getFiles(string $disk = '')
+    public function getFiles(string $disk = ''): void
     {
         if ($disk) {
             $this->activeDisk = $disk;
@@ -88,19 +89,22 @@ class App extends Component
         });
     }
 
-    public function showDeleteModal($fileIndex)
+    public function showDeleteModal($fileIndex): void
     {
         $this->deletingFile = $this->files[$fileIndex];
 
-        $this->emitSelf('showDeleteModal');
+        $this->dispatch('showDeleteModal')->self();
     }
 
-    public function deleteFile()
+    /**
+     * @throws ValidationException
+     */
+    public function deleteFile(): void
     {
         $deletingFile = $this->deletingFile;
         $this->deletingFile = null;
 
-        $this->emitSelf('hideDeleteModal');
+        $this->dispatch('hideDeleteModal')->self();
 
         $this->validateActiveDisk();
         $this->validateFilePath($deletingFile ? $deletingFile['path'] : '');
@@ -124,7 +128,7 @@ class App extends Component
             ->all();
     }
 
-    public function downloadFile(string $filePath)
+    public function downloadFile(string $filePath): Response|StreamedResponse
     {
         $this->validateActiveDisk();
         $this->validateFilePath($filePath);
@@ -164,18 +168,21 @@ class App extends Component
         }, 200, $downloadHeaders);
     }
 
-    public function createBackup(string $option = '')
+    public function createBackup(string $option = ''): void
     {
         dispatch(new CreateBackupJob($option))
             ->onQueue(config('laravel_backup_panel.queue'));
     }
 
-    public function render()
+    public function render(): View
     {
         return view('laravel_backup_panel::livewire.app');
     }
 
-    protected function validateActiveDisk()
+    /**
+     * @throws ValidationException
+     */
+    protected function validateActiveDisk(): void
     {
         try {
             Validator::make(
@@ -189,13 +196,16 @@ class App extends Component
             )->validate();
         } catch (ValidationException $e) {
             $message = $e->validator->errors()->get('activeDisk')[0];
-            $this->emitSelf('showErrorToast', $message);
+            $this->showErrorToast($message);
 
             throw $e;
         }
     }
 
-    protected function validateFilePath(string $filePath)
+    /**
+     * @throws ValidationException
+     */
+    protected function validateFilePath(string $filePath): void
     {
         try {
             Validator::make(
@@ -209,9 +219,14 @@ class App extends Component
             )->validate();
         } catch (ValidationException $e) {
             $message = $e->validator->errors()->get('file')[0];
-            $this->emitSelf('showErrorToast', $message);
+            $this->showErrorToast($message);
 
             throw $e;
         }
+    }
+
+    protected function showErrorToast(string $message): void
+    {
+        $this->dispatch('showErrorToast', message: $message)->self();
     }
 }
